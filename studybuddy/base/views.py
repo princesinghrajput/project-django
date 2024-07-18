@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.db.models import Q
-from .models import Room, Topic
+from .models import Room, Topic, Message
 from .forms import RoomForm
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -98,14 +98,18 @@ def home(request):
 def room(request, pk):
     #! Fetch Room data from database using room id
     room = Room.objects.get(id=pk)
+    room_message= room.message_set.all().order_by('-created_at')
 
+    if request.method == 'POST':
+        message= Message.objects.create(
+            user=request.user,
+            room=room,
+            body=request.POST.get('body')
+        )
 
-    # room = None
-    # for r in rooms:
-    #     if r['id'] == int(pk):
-    #         room = r
+ 
             
-    context = {'room':room}
+    context = {'room':room, 'room_message':room_message}
     return render(request, 'base/room.html', context)
 
 @login_required(login_url='login')
