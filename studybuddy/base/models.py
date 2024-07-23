@@ -22,7 +22,7 @@ class Room(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-    def _str_(self):
+    def __str__(self):
         return self.name
     
     class Meta:
