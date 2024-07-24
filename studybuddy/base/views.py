@@ -123,6 +123,8 @@ def userProfile(request, pk):
     room= user.room_set.all()
     topic = Topic.objects.all()
     room_message = user.message_set.all()
+   
+   
 
     context={'user': user, 'rooms': room, 'topics':topic, 'room_message': room_message}
 
