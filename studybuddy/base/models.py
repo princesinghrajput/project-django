@@ -6,8 +6,10 @@ from django.contrib.auth.models import User
 class Topic(models.Model):
     name = models.CharField(max_length=100)
 
-    def _str_(self):
+    def __str__(self):
         return self.name
+
+ 
 
 
 class Room(models.Model):
@@ -35,9 +37,13 @@ class Message(models.Model):
     body=models.TextField()
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     
-    def _str_(self):
-        return self.body[:50]
+
+    
     class Meta:
         ordering = ['-created_at']
+
+    def __str__(self):
+        return self.body[:50]
+       
 
 

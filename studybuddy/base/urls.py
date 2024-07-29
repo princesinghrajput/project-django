@@ -16,7 +16,12 @@ urlpatterns = [
     path('logout/',views.logoutUser, name='logout'),
     path('register/',views.registerPage, name='register'),
     path('delete-message/<str:pk>', views.deleteMessage, name='delete-message'),
-    path('user-profile/<str:pk>', views.userProfile, name='user-profile')
+    path('user-profile/<str:pk>', views.userProfile, name='user-profile'),
+    path('update-profile/', views.updateProfile, name='update-profile'),
+    path('user-setting/', views.userSetting, name='user-setting'),
+    path('topics/', views.topicPage, name='topics'),
+    path('activity/', views.activityPage, name='activity')
+
     
 
 

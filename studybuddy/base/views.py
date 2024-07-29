@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.db.models import Q
 from .models import Room, Topic, Message
-from .forms import RoomForm
+from .forms import RoomForm, UserForm
+
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -56,7 +57,7 @@ def loginPage(request):
        
 
         try:
-            user = User.objects.get(username=username, password=password)
+            user = User.objects.get(username=username)
         except:
             messages.error(request, "User Does Not Exists!")
 
@@ -90,7 +91,7 @@ def home(request):
       Q( host__username__icontains=q )  
     )
 
-    topics= Topic.objects.all()
+    topics= Topic.objects.all()[0:5]
 
     room_message = Message.objects.filter(Q(room__topic__name__icontains = q))
 
@@ -132,6 +133,7 @@ def userProfile(request, pk):
 
 @login_required(login_url='login')
 def createRoom(request):
+    topic = Topic.objects.all()
     form=RoomForm()
     if request.method == 'POST':
         print(request.POST)
@@ -145,7 +147,7 @@ def createRoom(request):
 
 
 
-    context={'form':form}
+    context={'form':form, 'topics':topic}
 
     return render(request,'base/room_form.html', context)
 
@@ -197,10 +199,44 @@ def deleteMessage(request, pk):
     return render(request, 'base/delete.html', {'obj':message})
         
 
+@login_required(login_url='login')
+def updateProfile(request):
+    user = request.user
+    form= UserForm(instance=request.user)
 
+    if request.method == 'POST':
+        form=UserForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('user-profile', pk=user.id )
 
+    return render(request, 'base/update-profile.html', {'form':form})
+
+@login_required(login_url='login')
+def userSetting(request):
    
+    return render(request, 'base/user-settings.html')
     
+
+def topicPage (request):
+    q= request.GET.get('q') if request.GET.get('q') != None else ''
+    topics=Topic.objects.filter(
+        Q(name__icontains=q )
+    )
+
+    context = {'topics':topics}
+
+    return render(request, 'base/topics.html', context)
+    
+
+def activityPage(request):
+
+    room_message = Message.objects.all()
+    context= {'room_message':room_message}
+
+    return render(request, 'base/activity.html', context)
+
+
 
 
 def about(request):
