@@ -4,7 +4,19 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 class User(AbstractUser):
-    pass
+    name= models.CharField(max_length=200, null=True)
+    email=models.EmailField(unique=True, null=True)
+
+    avatar= models.ImageField(null=True, default='avatar.svg')
+    bio=models.TextField(max_length=255, null=True)
+
+
+    USERNAME_FIELD='email'
+    REQUIRED_FIELDS= ['username']
+    
+
+
+    
 
 class Topic(models.Model):
     name = models.CharField(max_length=100)
